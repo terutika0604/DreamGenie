@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'pages/page.dart';
 import 'theme.dart';
+import 'views/gantt_screen.dart';
 
 void main() {
   runApp(const DreamGinieApp());
@@ -18,7 +18,7 @@ class DreamGinieApp extends StatelessWidget {
       darkTheme: AppTheme.darkTheme,
       themeMode: ThemeMode.system,
       // TODO: LoginPage, ProjectListPage
-      home: const SchedulePage(),
+      home: const GanttScreen(),
     );
   }
 }
