@@ -1,0 +1,23 @@
+{
+    "user_id" : "ユーザーID",
+    "project_id" : "プロジェクトID",
+    "title": "タイトル",
+    "start_day": "yyyy/mm/dd",
+    "end_day": "yyyy/mm/dd",
+    "user_goal":"目標(ユーザーメッセージ)",
+    "tasks": {
+        "categories": [
+                {
+                "category": "カテゴリー",
+                "tasks": [
+                    {
+                    "task_name": "タスク名",
+                    "description": "詳細",
+                    "task_start_day": "yyyy/mm/dd",
+                    "task_end_day": "yyyy/mm/dd"
+                    }
+                ]
+            }
+        ]
+    }
+}
