@@ -4,7 +4,7 @@
     "title": "タイトル",
     "start_day": "yyyy/mm/dd",
     "end_day": "yyyy/mm/dd",
-    "user_goal":"目標(ユーザーメッセージ)",
+    "user_message":"目標(ユーザーメッセージ)",
     "tasks": {
         "categories": [
                 {
