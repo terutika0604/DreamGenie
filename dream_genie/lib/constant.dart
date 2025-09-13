@@ -1,5 +1,16 @@
 import 'package:flutter_gantt/flutter_gantt.dart';
 
+const bool isMock = true;
+
+class ApiEndpoints {
+  ApiEndpoints._();
+
+  static const String baseUrl = "https://api.example.com";
+
+  static const ganttGenerate = "$baseUrl/create";
+  static const ganttUpdate = "$baseUrl/update";
+}
+
 final now = DateTime.now();
 final currentYear = DateTime.now().year;
 final monthAgo = now.subtract(const Duration(days: 30));

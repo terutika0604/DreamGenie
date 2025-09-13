@@ -1,0 +1,86 @@
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../../viewmodels/gantt_view_model.dart';
+
+class CreateScreen extends StatefulWidget {
+  const CreateScreen({super.key});
+
+  @override
+  State<CreateScreen> createState() => _CreateScreenState();
+}
+
+class _CreateScreenState extends State<CreateScreen> {
+  final TextEditingController _inputController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _inputController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final vm = context.watch<GanttViewModel>();
+
+    return Positioned(
+      top: 0,
+      right: 0,
+      bottom: 0,
+      child: Container(
+        width: 300,
+        color: Colors.white,
+        child: Column(mainAxisSize: MainAxisSize.max, children: [
+          Container(
+            height: 50,
+            color: Colors.blue,
+            alignment: Alignment.center,
+            child: const Text("AI Chat", style: TextStyle(color: Colors.white)),
+          ),
+
+          // チャットメッセージ一覧
+          Expanded(
+            child: ListView.builder(
+              itemCount: vm.messages.length,
+              itemBuilder: (context, index) {
+                final msg = vm.messages[index];
+                return ListTile(
+                  title: Text(msg.text),
+                  subtitle: Text(msg.sender),
+                );
+              },
+            ),
+          ),
+
+          // 入力欄
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    controller: _inputController,
+                    decoration:
+                        const InputDecoration(hintText: "Type a message"),
+                  ),
+                ),
+                IconButton(
+                  icon: const Icon(Icons.send),
+                  onPressed: () async {
+                    // await vm.sendMessage();
+                    await vm.update();
+                  },
+                ),
+              ],
+            ),
+          ),
+        ]),
+      ),
+    );
+  }
+}

@@ -11,6 +11,8 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_gantt:
+  http:
+  provider:
 
   cupertino_icons: ^1.0.6
 
@@ -22,3 +24,6 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+
+assets:
+  assets/
