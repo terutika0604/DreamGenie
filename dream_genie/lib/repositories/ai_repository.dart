@@ -1,12 +1,13 @@
 import 'dart:convert';
 
+import 'package:dream_genie/models/init_data.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 
 import '../constant.dart';
 
 abstract class IAIRepository {
-  Future<Map<String, dynamic>> create();
+  Future<Map<String, dynamic>> create(InitData initdata);
 
   Future<Map<String, dynamic>> update();
 }
@@ -17,9 +18,10 @@ class AIRepository implements IAIRepository {
   AIRepository(this.client);
 
   @override
-  Future<Map<String, dynamic>> create() async {
+  Future<Map<String, dynamic>> create(InitData initdata) async {
     try {
-      final response = await client.get(
+      // TODO: send initdata.toJson
+      final response = await client.post(
         Uri.parse(ApiEndpoints.ganttGenerate),
       );
 
@@ -59,7 +61,7 @@ class MockAIRepository implements IAIRepository {
   MockAIRepository();
 
   @override
-  Future<Map<String, dynamic>> create() async {
+  Future<Map<String, dynamic>> create(InitData initdata) async {
     try {
       final response =
           await rootBundle.loadString("dummy_ai_response_data.json");

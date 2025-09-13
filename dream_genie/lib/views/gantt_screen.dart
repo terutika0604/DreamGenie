@@ -5,7 +5,6 @@ import 'package:flutter_gantt/flutter_gantt.dart';
 import 'package:provider/provider.dart';
 
 import '../constant.dart';
-import '../repositories/ai_repository.dart';
 import '../viewmodels/gantt_view_model.dart';
 import 'components/ai_chat.dart';
 
@@ -27,18 +26,18 @@ class GanttScreen extends StatefulWidget {
 }
 
 class _GanttScreenState extends State<GanttScreen> {
-  late final GanttController controller;
+  late final GanttController _controller;
 
   @override
   void initState() {
     super.initState();
 
-    controller = GanttController(
+    _controller = GanttController(
       startDate: now.subtract(const Duration(days: 14)),
       //daysViews: 10, // Optional: you can set the number of days to be displayed
     );
 
-    controller.addOnActivityChangedListener(_onActivityChanged);
+    _controller.addOnActivityChangedListener(_onActivityChanged);
   }
 
   void _onActivityChanged(activity, DateTime? start, DateTime? end) {
@@ -53,21 +52,9 @@ class _GanttScreenState extends State<GanttScreen> {
 
   @override
   void dispose() {
-    controller.removeOnActivityChangedListener(_onActivityChanged);
+    _controller.removeOnActivityChangedListener(_onActivityChanged);
     super.dispose();
   }
-
-  @override
-  Widget build(BuildContext context) => ChangeNotifierProvider(
-        create: (_) => GanttViewModel(context.read<IAIRepository>()),
-        child: _GanttView(controller: controller),
-      );
-}
-
-class _GanttView extends StatelessWidget {
-  const _GanttView({required this.controller});
-
-  final GanttController controller;
 
   @override
   Widget build(BuildContext context) {
@@ -81,13 +68,13 @@ class _GanttView extends StatelessWidget {
           children: [
             Column(
               children: [
-                GanttRangeSelector(controller: controller),
+                GanttRangeSelector(controller: _controller),
                 Expanded(
                   child: vm.isLoading
-                      ? const Center(child:  CircularProgressIndicator())
+                      ? const Center(child: CircularProgressIndicator())
                       : Gantt(
                           theme: GanttTheme.of(context),
-                          controller: controller,
+                          controller: _controller,
                           activitiesAsync:
                               (startDate, endDate, activity) async =>
                                   vm.activities,
@@ -112,13 +99,13 @@ class _GanttView extends StatelessWidget {
                             if (end != null) {
                               vm.activities.getFromKey(activity.key)!.end = end;
                             }
-                            controller.update();
+                            _controller.update();
                           },
                         ),
                 ),
               ],
             ),
-            AiChatComponent(controller: controller),
+            AiChatComponent(controller: _controller),
           ],
         );
       }),

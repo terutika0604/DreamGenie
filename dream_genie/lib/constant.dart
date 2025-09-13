@@ -2,6 +2,9 @@ import 'package:flutter_gantt/flutter_gantt.dart';
 
 const bool isMock = true;
 
+// TODO: multiple user
+const userId = "udd001";
+
 class ApiEndpoints {
   ApiEndpoints._();
 

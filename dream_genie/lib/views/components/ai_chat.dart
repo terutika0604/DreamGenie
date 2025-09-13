@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gantt/flutter_gantt.dart';
 import 'package:provider/provider.dart';
 
+import '../../models/chat_message.dart';
 import '../../viewmodels/gantt_view_model.dart';
 
 class AiChatComponent extends StatefulWidget {
@@ -75,7 +76,9 @@ class _AiChatComponentState extends State<AiChatComponent> {
                 IconButton(
                   icon: const Icon(Icons.send),
                   onPressed: () async {
-                    // await vm.sendMessage();
+                    vm.addMessages(ChatMessage(
+                        sender: 'user', text: _inputController.text));
+                    _inputController.text = '';
                     await vm.update();
                     widget.controller.update();
                   },

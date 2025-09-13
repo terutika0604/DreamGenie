@@ -13,6 +13,7 @@ dependencies:
   flutter_gantt:
   http:
   provider:
+  intl:
 
   cupertino_icons: ^1.0.6
 

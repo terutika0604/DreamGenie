@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../../viewmodels/gantt_view_model.dart';
+import '../constant.dart';
+import '../models/init_data.dart';
 
 class CreateScreen extends StatefulWidget {
   const CreateScreen({super.key});
@@ -11,7 +14,11 @@ class CreateScreen extends StatefulWidget {
 }
 
 class _CreateScreenState extends State<CreateScreen> {
-  final TextEditingController _inputController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+  String _title = '';
+  DateTime _startDate = DateTime.now();
+  DateTime _endDate = DateTime.now().add(const Duration(days: 14));
+  String _userMessage = '';
 
   @override
   void initState() {
@@ -20,7 +27,6 @@ class _CreateScreenState extends State<CreateScreen> {
 
   @override
   void dispose() {
-    _inputController.dispose();
     super.dispose();
   }
 
@@ -28,58 +34,101 @@ class _CreateScreenState extends State<CreateScreen> {
   Widget build(BuildContext context) {
     final vm = context.watch<GanttViewModel>();
 
-    return Positioned(
-      top: 0,
-      right: 0,
-      bottom: 0,
-      child: Container(
-        width: 300,
-        color: Colors.white,
-        child: Column(mainAxisSize: MainAxisSize.max, children: [
-          Container(
-            height: 50,
-            color: Colors.blue,
-            alignment: Alignment.center,
-            child: const Text("AI Chat", style: TextStyle(color: Colors.white)),
-          ),
-
-          // チャットメッセージ一覧
-          Expanded(
-            child: ListView.builder(
-              itemCount: vm.messages.length,
-              itemBuilder: (context, index) {
-                final msg = vm.messages[index];
-                return ListTile(
-                  title: Text(msg.text),
-                  subtitle: Text(msg.sender),
-                );
-              },
-            ),
-          ),
-
-          // 入力欄
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        title: const Text("Create New Project"),
+      ),
+      body: Center(
+        child: Container(
+          width: 500,
+          padding: const EdgeInsets.all(30),
+          child: Form(
+            key: _formKey,
+            child: Column(
               children: [
-                Expanded(
-                  child: TextField(
-                    controller: _inputController,
-                    decoration:
-                        const InputDecoration(hintText: "Type a message"),
-                  ),
+                TextFormField(
+                  decoration: const InputDecoration(labelText: 'タイトル'),
+                  onSaved: (value) => _title = value ?? '',
+                  validator: (value) => value!.isEmpty ? '入力してください' : null,
                 ),
-                IconButton(
-                  icon: const Icon(Icons.send),
-                  onPressed: () async {
-                    // await vm.sendMessage();
-                    await vm.update();
+                const SizedBox(height: 30),
+                TextFormField(
+                  decoration: const InputDecoration(labelText: '目標'),
+                  onSaved: (value) => _userMessage = value ?? '',
+                  validator: (value) => value!.isEmpty ? '入力してください' : null,
+                ),
+                const SizedBox(height: 30),
+                Row(
+                  children: [
+                    Text("開始日: ${DateFormat('yyyy/MM/dd').format(_startDate)}"),
+                    const SizedBox(width: 30),
+                    ElevatedButton(
+                      child: const Text('選択'),
+                      onPressed: () async {
+                        DateTime? picked = await showDatePicker(
+                          context: context,
+                          initialDate: _startDate,
+                          firstDate: now,
+                          lastDate: DateTime(2100),
+                        );
+                        if (picked != null && picked != _startDate) {
+                          setState(() {
+                            _startDate = picked;
+                          });
+                        }
+                      },
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 30),
+                Row(
+                  children: [
+                    Text("終了日: ${DateFormat('yyyy/MM/dd').format(_endDate)}"),
+                    const SizedBox(width: 30),
+                    ElevatedButton(
+                      child: const Text('選択'),
+                      onPressed: () async {
+                        DateTime? picked = await showDatePicker(
+                          context: context,
+                          initialDate: _endDate,
+                          firstDate: _startDate,
+                          lastDate: DateTime(2100),
+                        );
+                        if (picked != null && picked != _endDate) {
+                          setState(() {
+                            _endDate = picked;
+                          });
+                        }
+                      },
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 100),
+                ElevatedButton(
+                  child: const Text('計画を立てる'),
+                  onPressed: () {
+                    if (_formKey.currentState!.validate()) {
+                      _formKey.currentState!.save();
+
+                      vm.create(
+                        InitData(
+                          userId: userId,
+                          title: _title,
+                          startDate: _startDate,
+                          endDate: _endDate,
+                          userMessage: _userMessage,
+                        ),
+                      );
+
+                      Navigator.pushNamed(context, '/gantt');
+                    }
                   },
                 ),
               ],
             ),
           ),
-        ]),
+        ),
       ),
     );
   }
