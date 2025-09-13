@@ -18,7 +18,7 @@ class _CreateScreenState extends State<CreateScreen> {
   String _title = '';
   DateTime _startDate = DateTime.now();
   DateTime _endDate = DateTime.now().add(const Duration(days: 14));
-  String _userMessage = '';
+  String _userGoal = '';
 
   @override
   void initState() {
@@ -55,7 +55,7 @@ class _CreateScreenState extends State<CreateScreen> {
                 const SizedBox(height: 30),
                 TextFormField(
                   decoration: const InputDecoration(labelText: '目標'),
-                  onSaved: (value) => _userMessage = value ?? '',
+                  onSaved: (value) => _userGoal = value ?? '',
                   validator: (value) => value!.isEmpty ? '入力してください' : null,
                 ),
                 const SizedBox(height: 30),
@@ -114,10 +114,10 @@ class _CreateScreenState extends State<CreateScreen> {
                       vm.create(
                         InitData(
                           userId: userId,
+                          userGoal: _userGoal,
                           title: _title,
                           startDate: _startDate,
                           endDate: _endDate,
-                          userMessage: _userMessage,
                         ),
                       );
 
