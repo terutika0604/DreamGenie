@@ -43,8 +43,11 @@ class GanttViewModel extends ChangeNotifier {
       _userGoal = initdata.userGoal;
 
       final json = await repository.create(initdata);
-      _aiResponse = JsonParser.parseResponseData(json);
-
+      try {
+        _aiResponse = JsonParser.parseResponseData(json);
+      } catch (e) {
+        debugPrint('parse error: $e');
+      }
       _projectId = _aiResponse.projectId;
       _activities = _aiResponse.tasks;
       addMessages(ChatMessage(sender: 'ai', text: _aiResponse.aiComent));
@@ -65,7 +68,14 @@ class GanttViewModel extends ChangeNotifier {
       notifyListeners();
 
       final json = await repository.update();
-      _aiResponse = JsonParser.parseResponseData(json);
+      try {
+        _aiResponse = JsonParser.parseResponseData(json);
+      } catch (e) {
+        debugPrint('parse error: $e');
+      }
+
+      _activities = _aiResponse.tasks;
+      addMessages(ChatMessage(sender: 'ai', text: _aiResponse.aiComent));
 
       _isLoading = false;
       notifyListeners();
