@@ -1,0 +1,16 @@
+# Environments
+.venv/
+venv/
+env/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Credentials and environment variables
+vertexAI.json
+.env
+
+# IDE settings
+.vscode/
+.idea/
