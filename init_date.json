@@ -1,1 +1,7 @@
-{}
+{
+    "user_id": "ユーザーID",
+    "title":"タイトル",
+    "start_day":"yyyy/mm/dd",
+    "end_day": "yyyy/mm/dd",
+    "user_message":"ユーザーメッセージ(目標)"
+}

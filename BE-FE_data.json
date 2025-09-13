@@ -1,0 +1,19 @@
+{
+    "project_id" : "プロジェクトID",
+    "tasks": {
+        "categories": [
+                {
+                "category": "カテゴリー",
+                "tasks": [
+                    {
+                    "task_name": "タスク名",
+                    "description": "詳細",
+                    "task_start_day": "yyyy/mm/dd",
+                    "task_end_day": "yyyy/mm/dd"
+                    }
+                ]
+            }
+        ]
+    },
+    "ai_coment":"ai_coment"
+}
