@@ -58,57 +58,61 @@ class _GanttScreenState extends State<GanttScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: const Text("Your Project"),
-      ),
-      body: Consumer<GanttViewModel>(builder: (context, vm, child) {
-        return Stack(
-          children: [
-            Column(
-              children: [
-                GanttRangeSelector(controller: _controller),
-                Expanded(
-                  child: vm.isLoading
-                      ? const Center(child: CircularProgressIndicator())
-                      : Gantt(
-                          theme: GanttTheme.of(context),
-                          controller: _controller,
-                          activitiesAsync:
-                              (startDate, endDate, activity) async =>
-                                  vm.activities,
-                          holidaysAsync: (startDate, endDate, holidays) async =>
-                              holidays,
-                          onActivityChanged: (activity, start, end) {
-                            if (start != null && end != null) {
-                              debugPrint(
-                                  '$activity was moved (Event on widget)');
-                            } else if (start != null) {
-                              debugPrint(
-                                '$activity start was moved (Event on widget)',
-                              );
-                            } else if (end != null) {
-                              debugPrint(
-                                  '$activity end was moved (Event on widget)');
-                            }
-                            if (start != null) {
-                              vm.activities.getFromKey(activity.key)!.start =
-                                  start;
-                            }
-                            if (end != null) {
-                              vm.activities.getFromKey(activity.key)!.end = end;
-                            }
-                            _controller.update();
-                          },
-                        ),
-                ),
-              ],
-            ),
-            AiChatComponent(controller: _controller),
-          ],
+    return Consumer<GanttViewModel>(
+      builder: (context, vm, child) {
+        return Scaffold(
+          appBar: AppBar(
+            backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+            title: Text(vm.projectName),
+          ),
+          body: Stack(
+            children: [
+              Column(
+                children: [
+                  GanttRangeSelector(controller: _controller),
+                  Expanded(
+                    child: vm.isLoading
+                        ? const Center(child: CircularProgressIndicator())
+                        : Gantt(
+                            theme: GanttTheme.of(context),
+                            controller: _controller,
+                            activitiesAsync:
+                                (startDate, endDate, activity) async =>
+                                    vm.activities,
+                            holidaysAsync:
+                                (startDate, endDate, holidays) async =>
+                                    holidays,
+                            onActivityChanged: (activity, start, end) {
+                              if (start != null && end != null) {
+                                debugPrint(
+                                    '$activity was moved (Event on widget)');
+                              } else if (start != null) {
+                                debugPrint(
+                                  '$activity start was moved (Event on widget)',
+                                );
+                              } else if (end != null) {
+                                debugPrint(
+                                    '$activity end was moved (Event on widget)');
+                              }
+                              if (start != null) {
+                                vm.activities.getFromKey(activity.key)!.start =
+                                    start;
+                              }
+                              if (end != null) {
+                                vm.activities.getFromKey(activity.key)!.end =
+                                    end;
+                              }
+                              _controller.update();
+                            },
+                          ),
+                  ),
+                ],
+              ),
+              AiChatComponent(controller: _controller),
+            ],
+          ),
         );
-      }),
+      },
     );
   }
 }

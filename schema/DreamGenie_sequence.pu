@@ -1,0 +1,37 @@
+@startuml sequence_diagram
+actor User
+participant FEService
+participant BEService
+participant AIAgent
+database Database
+
+== Create schedule ==
+User -> FEService: access
+FEService -> BEService: Init data - /createSchedule
+BEService -> AIAgent: AI request prompt(text)
+AIAgent --> BEService: AI response data
+BEService -> Database: Store data
+BEService --> FEService: Be response data
+
+== Update schedule ==
+User -> FEService: prompt(text)
+FEService -> BEService: update data - /updateSchedule
+BEService -> Database: Get store data
+Database --> BEService: Store data
+BEService -> AIAgent: AI request prompt(text)
+AIAgent --> BEService: AI response data
+BEService --> FEService: Be response data
+FEService --> User: Confirm
+
+== Approval schedule ==
+alt ok
+  User -> FEService: OK
+  FEService -> BEService: Tasks resend
+  BEService -> Database: Store data(only update tasks)
+  FEService -> User: Rebuild using new data
+else ng
+  User -> FEService: NG
+  FEService -> User: Rebuild using old data
+end
+
+@enduml

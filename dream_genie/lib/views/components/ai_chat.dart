@@ -46,8 +46,6 @@ class _AiChatComponentState extends State<AiChatComponent> {
             alignment: Alignment.center,
             child: const Text("AI Chat", style: TextStyle(color: Colors.white)),
           ),
-
-          // チャットメッセージ一覧
           Expanded(
             child: ListView.builder(
               itemCount: vm.messages.length,
@@ -60,8 +58,6 @@ class _AiChatComponentState extends State<AiChatComponent> {
               },
             ),
           ),
-
-          // 入力欄
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Row(

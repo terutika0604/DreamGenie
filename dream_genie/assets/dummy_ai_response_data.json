@@ -1,18 +1,58 @@
 {
-  "tasks": {
-    "categories": [
-      {
-        "category": "カテゴリー",
-        "tasks": [
-          {
-            "task_name": "タスク名",
-            "description": "詳細",
-            "task_start_day": "yyyy/mm/dd",
-            "task_end_day": "yyyy/mm/dd"
-          }
-        ]
-      }
-    ]
-  },
-  "ai_coment": "ai_coment"
+  "project_id": "pj0001",
+  "ai_coment": "ai_coment",
+  "tasks": [
+    {
+      "key": "task1",
+      "title": "Main Task",
+      "tooltip": "Top-level task",
+      "start": "2025/09/01",
+      "end": "2025/09/15",
+      "color": "#4DB6AC",
+      "children": [
+        {
+          "key": "task1.sub1",
+          "title": "Subtask 1",
+          "tooltip": "Child task",
+          "start": "2025/09/01",
+          "end": "2025/09/04",
+          "color": "#81C784"
+        },
+        {
+          "key": "task1.sub2",
+          "title": "Subtask 2",
+          "tooltip": "Child task",
+          "start": "2025/09/05",
+          "end": "2025/09/10",
+          "color": "#81C784"
+        },
+        {
+          "key": "task1.sub3",
+          "title": "Subtask 3",
+          "tooltip": "Child task",
+          "start": "2025/09/11",
+          "end": "2025/09/15",
+          "color": "#81C784",
+          "children": [
+            {
+              "key": "sub3.subsub1",
+              "title": "SubSubtask 1",
+              "tooltip": "Child task",
+              "start": "2025/09/11",
+              "end": "2025/09/12",
+              "color": "#FFB74D"
+            },
+            {
+              "key": "sub3.subsub2",
+              "title": "SubSubtask 2",
+              "tooltip": "Child task",
+              "start": "2025/09/12",
+              "end": "2025/09/15",
+              "color": "#FFB74D"
+            }
+          ]
+        }
+      ]
+    }
+  ]
 }
