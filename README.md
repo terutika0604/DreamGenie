@@ -1,4 +1,4 @@
 # DreamGenie
 
 ## sequence
-![alt text](image.png)
+![alt text](sequence.png)
