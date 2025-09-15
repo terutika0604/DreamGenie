@@ -9,6 +9,7 @@ __pycache__/
 
 # Credentials and environment variables
 vertexAI.json
+firestore.json
 .env
 
 # IDE settings

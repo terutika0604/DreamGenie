@@ -1,0 +1,59 @@
+{
+  "type": "object",
+  "properties": {
+    "ai_comment": {
+      "type": "string",
+      "description": "AIによるコメント文字列"
+    },
+    "tasks": {
+      "type": "array",
+      "description": "タスクのリスト",
+      "items": {
+        "ref": "#/defs/task"
+      }
+    }
+  },
+  "required": ["ai_comment", "tasks"],
+  "defs": {
+    "task": {
+      "type": "object",
+      "properties": {
+        "key": {
+          "type": "string",
+          "description": "タスクの一意な識別子"
+        },
+        "title": {
+          "type": "string",
+          "description": "タスクの名前"
+        },
+        "tooltip": {
+          "type": "string",
+          "description": "タスクに関する補足説明"
+        },
+        "start": {
+          "type": "string",
+          "description": "開始日 (YYYY/MM/DD)",
+          "pattern": "^[0-9]{4}/[0-9]{2}/[0-9]{2}$"
+        },
+        "end": {
+          "type": "string",
+          "description": "終了日 (YYYY/MM/DD)",
+          "pattern": "^[0-9]{4}/[0-9]{2}/[0-9]{2}$"
+        },
+        "color": {
+          "type": "string",
+          "description": "タスクの色 (HEXカラーコード)",
+          "pattern": "^#[0-9A-Fa-f]{6}$"
+        },
+        "children": {
+          "type": "array",
+          "description": "子タスクのリスト",
+          "items": {
+            "ref": "#/defs/task"
+          }
+        }
+      },
+      "required": ["key", "title", "tooltip", "start", "end", "color"]
+    }
+  }
+}
