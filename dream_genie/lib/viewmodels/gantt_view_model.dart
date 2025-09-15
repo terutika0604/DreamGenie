@@ -4,6 +4,7 @@ import 'package:flutter_gantt/flutter_gantt.dart';
 import '../models/chat_message.dart';
 import '../models/init_data.dart';
 import '../models/response_data.dart';
+import '../models/update_data.dart';
 import '../repositories/ai_repository.dart';
 import '../utils/json_parser.dart';
 
@@ -16,15 +17,20 @@ class GanttViewModel extends ChangeNotifier {
   late final String _projectName;
   late final String _userGoal;
   bool _isLoading = false;
+  bool _isChanging = false;
   String? _errorMessage;
+  List<GanttActivity> _oldActivities = [];
   List<GanttActivity> _activities = [];
   final List<ChatMessage> _messages = [];
+  Map<String, dynamic> _changingJson = {};
   ResponseData _aiResponse =
       ResponseData(projectId: '', aiComent: '', tasks: []);
 
+  get projectId => _projectId;
   get projectName => _projectName;
   get userGoal => _userGoal;
   get isLoading => _isLoading;
+  get isChanging => _isChanging;
   get errorMessage => _errorMessage;
   get activities => _activities;
   get messages => _messages;
@@ -33,7 +39,7 @@ class GanttViewModel extends ChangeNotifier {
     _messages.add(newMessage);
   }
 
-  Future<void> create(InitData initdata) async {
+  Future<void> createSchedule(InitData initdata) async {
     try {
       _isLoading = true;
       _errorMessage = null;
@@ -42,7 +48,7 @@ class GanttViewModel extends ChangeNotifier {
       _projectName = initdata.title;
       _userGoal = initdata.userGoal;
 
-      final json = await repository.create(initdata);
+      final json = await repository.createSchedule(initdata);
       try {
         _aiResponse = JsonParser.parseResponseData(json);
       } catch (e) {
@@ -61,21 +67,25 @@ class GanttViewModel extends ChangeNotifier {
     }
   }
 
-  Future<void> update() async {
+  Future<void> updateSchedule(UpdateData updateData) async {
     try {
       _isLoading = true;
+      _oldActivities = _activities;
       _errorMessage = null;
       notifyListeners();
 
-      final json = await repository.update();
+      final json = await repository.updateSchedule(updateData);
+      _changingJson = json;
       try {
         _aiResponse = JsonParser.parseResponseData(json);
       } catch (e) {
         debugPrint('parse error: $e');
       }
 
+      _isChanging = true;
       _activities = _aiResponse.tasks;
       addMessages(ChatMessage(sender: 'ai', text: _aiResponse.aiComent));
+      addMessages(ChatMessage(sender: 'ai', text: "これで確定しますか？"));
 
       _isLoading = false;
       notifyListeners();
@@ -84,5 +94,27 @@ class GanttViewModel extends ChangeNotifier {
       _errorMessage = e.toString();
       notifyListeners();
     }
+  }
+
+  void acceptUpdate() async {
+    _isChanging = false;
+    await repository.acceptUpdate(_changingJson);
+    _resetOldData();
+    addMessages(ChatMessage(sender: 'ai', text: "確定しました！"));
+    notifyListeners();
+  }
+
+  void rejectUpdate() {
+    _isChanging = false;
+    _activities = _oldActivities;
+    _resetOldData();
+    addMessages(ChatMessage(
+        sender: 'ai', text: "元に戻しました！具体的な指示をしていただければご要望にそった変更がしやすくなります。"));
+    notifyListeners();
+  }
+
+  void _resetOldData() {
+    _changingJson = {};
+    _oldActivities = [];
   }
 }
