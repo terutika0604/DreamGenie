@@ -80,7 +80,7 @@ class MockAIRepository implements IAIRepository {
   Future<Map<String, dynamic>> createSchedule(InitData initdata) async {
     try {
       final response =
-          await rootBundle.loadString("dummy_ai_response_data.json");
+          await rootBundle.loadString("assets/dummy_ai_response_data.json");
       final data = jsonDecode(response);
       await Future.delayed(const Duration(seconds: 5));
       return data;
@@ -93,7 +93,7 @@ class MockAIRepository implements IAIRepository {
   Future<Map<String, dynamic>> updateSchedule(UpdateData updatedata) async {
     try {
       final response =
-          await rootBundle.loadString("dummy_ai_response_data2.json");
+          await rootBundle.loadString("assets/dummy_ai_response_data2.json");
       final data = jsonDecode(response);
       await Future.delayed(const Duration(seconds: 5));
       return data;
