@@ -58,12 +58,21 @@ class _GanttScreenState extends State<GanttScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Consumer<GanttViewModel>(
       builder: (context, vm, child) {
         return Scaffold(
           appBar: AppBar(
-            backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-            title: Text(vm.projectName),
+            backgroundColor: theme.colorScheme.primary,
+            title: Text(
+              vm.projectName,
+              style: theme.textTheme.titleMedium?.copyWith(
+                color: theme.colorScheme.onPrimary,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            automaticallyImplyLeading: false,
           ),
           body: Stack(
             children: [

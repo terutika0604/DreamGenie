@@ -26,5 +26,6 @@ dev_dependencies:
 flutter:
   uses-material-design: true
 
-assets:
-  assets/
+  assets:
+    - assets/dummy_ai_response_data.json
+    - assets/dummy_ai_response_data2.json
