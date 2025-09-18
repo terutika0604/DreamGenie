@@ -1,9 +1,9 @@
 import os
 import json
-from schemas import ScheduleRequest
+from schemas import CreateScheduleRequest
 from ai_func.request_ai import request_to_ai
 
-def createSchedule(request: ScheduleRequest):
+def createSchedule(request: CreateScheduleRequest):
 
     base_dir = os.path.dirname(__file__)
     # ai_funcディレクトリ内のファイルを参照

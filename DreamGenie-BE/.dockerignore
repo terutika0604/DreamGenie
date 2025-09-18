@@ -4,7 +4,6 @@
 
 # Docker
 .dockerignore
-Dockerfile
 
 # Environments
 .venv
@@ -13,7 +12,7 @@ env
 
 # Credentials and environment variables
 .env
-vertexAI.json
+Authentication.json
 
 # Python cache
 __pycache__

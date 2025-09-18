@@ -1,6 +1,6 @@
-from fastapi import FastAPI
-from process import process
-from schemas import ScheduleRequest
+from fastapi import FastAPI, HTTPException
+from process import orchestrator
+from schemas import CreateScheduleRequest, UpdateScheduleRequest
 
 app = FastAPI()
 
@@ -9,8 +9,17 @@ def hello():
     return {"message": "Hello!"}
 
 @app.post("/createSchedule")
-def create_schedule(request: ScheduleRequest):
-    response = process.main_process(request)
+def create_schedule(request: CreateScheduleRequest):
+    response = orchestrator.orchestrate_schedule_creation(request)
+    if response is None:
+        raise HTTPException(status_code=500, detail="Failed to create and save schedule.")
+    return response
+
+@app.post("/updateSchedule")
+def update_schedule(request: UpdateScheduleRequest):
+    response = orchestrator.orchestrate_schedule_update(request)
+    if response is None:
+        raise HTTPException(status_code=404, detail="Schedule not found or access denied.")
     return response
 
 if __name__ == "__main__":
