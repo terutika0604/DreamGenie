@@ -25,7 +25,6 @@ def store_to_firestore(request_data: CreateScheduleRequest, ai_response) -> Tupl
         data_to_store.update({
             'tasks': ai_response.get('tasks', []),
             'ai_comment': ai_response.get('ai_comment', ''),
-            'createdAt': datetime.now().strftime('%Y/%m/%d %H:%M:%S.%f')[:-3],
         })
 
         doc_ref = db.collection('schedules').document()
