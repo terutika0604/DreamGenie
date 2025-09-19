@@ -45,7 +45,7 @@ def orchestrate_schedule_update(request: UpdateScheduleRequest):
         return None
 
     # 既存スケジュールからAIに不要な情報を削除
-    keys_to_remove = ['project_id', 'user_id', 'createdAt', 'updatedAt']
+    keys_to_remove = ['project_id', 'user_id']
     for key in keys_to_remove:
         schedule_data.pop(key, None)
 
