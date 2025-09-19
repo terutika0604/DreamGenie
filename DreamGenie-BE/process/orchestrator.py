@@ -27,7 +27,7 @@ def orchestrate_schedule_update(request: UpdateScheduleRequest):
     schedule_data = registerFirestore.get_schedule_from_firestore(request.project_id, request.user_id)
 
     if schedule_data is None:
-        logging.warning(f"指定されたプロジェクトが見つからないか、アクセス権がありません。project_id: {request.project_id}, user_id: {request.user_id}")
+        logging.warning(f"指定されたプロジェクトが見つからないか、アクセス権がありません。project_id: {request.project_id}, user_id: {request.user_id}") # get_schedule_from_firestore内で詳細ログが出力される
         return None
 
     #プロンプトを作成
@@ -60,8 +60,22 @@ def orchestrate_schedule_update(request: UpdateScheduleRequest):
     ai_result_str = request_to_ai(prompt_text, schema_dict)
     ai_json = json.loads(ai_result_str)
 
-    # is_success, _ = registerFirestore.update_schedule_in_firestore(request.project_id, ai_json)
-
     # 更新後のデータを返す
     ai_json['project_id'] = request.project_id
     return ai_json
+
+def orchestrate_schedule_approval(approval_data: dict):
+
+    project_id = approval_data.get("project_id")
+    if not project_id:
+        logging.error("承認データにproject_idが含まれていません。")
+        return None
+
+    # Firestoreのデータを更新
+    is_success = registerFirestore.update_schedule_in_firestore(project_id, approval_data)
+
+    if not is_success:
+        logging.error(f"Firestoreのデータ更新に失敗しました。project_id: {project_id}")
+        return None
+
+    return {"message": "Schedule approved and updated successfully."}

@@ -1,6 +1,8 @@
 {
     "project_id": "プロジェクトID",
-    "ai_coment": "ai_coment",
+    "ai_comment": "ai_comment",
+    "start_date": "yyyy/mm/dd",
+    "end_date": "yyyy/mm/dd",
     "tasks": [
         {
             "key": "task1",

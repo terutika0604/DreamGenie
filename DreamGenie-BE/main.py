@@ -1,6 +1,6 @@
 from fastapi import FastAPI, HTTPException
 from process import orchestrator
-from schemas import CreateScheduleRequest, UpdateScheduleRequest
+from schemas import CreateScheduleRequest, UpdateScheduleRequest, ApprovalScheduleRequest
 
 app = FastAPI()
 
@@ -20,6 +20,13 @@ def update_schedule(request: UpdateScheduleRequest):
     response = orchestrator.orchestrate_schedule_update(request)
     if response is None:
         raise HTTPException(status_code=404, detail="Schedule not found or access denied.")
+    return response
+
+@app.post("/approvalSchedule")
+def approval_schedule(request: ApprovalScheduleRequest):
+    response = orchestrator.orchestrate_schedule_approval(request.model_dump())
+    if response is None:
+        raise HTTPException(status_code=404, detail="Failed to approve schedule. Project not found, access denied, or update failed.")
     return response
 
 if __name__ == "__main__":

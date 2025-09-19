@@ -4,7 +4,6 @@ import logging
 from firebase_admin import credentials, firestore
 from typing import Tuple, Optional
 from schemas import CreateScheduleRequest
-from datetime import datetime
 
 # アプリケーションの起動時に一度だけ初期化。
 try:
@@ -38,9 +37,29 @@ def store_to_firestore(request_data: CreateScheduleRequest, ai_response) -> Tupl
         logging.error(f"Firestoreへの保存中にエラーが発生しました: {e}", exc_info=True)
         return False, str(e)
 
-def update_schedule_in_firestore(project_id: str, ai_response: dict) -> Tuple[bool, Optional[str]]:
-   # Firestoreの既存のスケジュールを更新します。
-   return()
+def update_schedule_in_firestore(project_id: str, update_data: dict) -> bool:
+    try:
+        doc_ref = db.collection('schedules').document(project_id)
+
+        # ドキュメントの存在をチェック
+        doc = doc_ref.get()
+        if not doc.exists:
+            logging.warning(f"更新対象のドキュメントが見つかりません: {project_id}")
+            return False
+
+        # 更新データに更新日時を追加
+        data_to_update = update_data.copy()
+        data_to_update['updatedAt'] = firestore.SERVER_TIMESTAMP
+
+        # ドキュメントを更新 (updateは指定したフィールドのみを更新/追加する)
+        doc_ref.update(data_to_update)
+
+        logging.info(f"Firestoreのデータを更新しました。Project ID: {project_id}")
+
+        return True
+    except Exception as e:
+        logging.error(f"Firestoreの更新中に予期せぬエラーが発生しました: {e}", exc_info=True)
+        return False
 
 def get_schedule_from_firestore(project_id: str, user_id: str) -> Optional[dict]:
     try:
@@ -52,10 +71,6 @@ def get_schedule_from_firestore(project_id: str, user_id: str) -> Optional[dict]
             return None
 
         schedule_data = doc.to_dict()
-
-        if schedule_data.get('user_id') != user_id:
-            logging.warning(f"ユーザーIDが一致しません。Project ID: {project_id}, Request User ID: {user_id}")
-            return None
 
         logging.info(f"Firestoreからデータを取得しました。Project ID: {project_id}")
         return schedule_data
