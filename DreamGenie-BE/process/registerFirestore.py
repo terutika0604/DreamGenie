@@ -20,12 +20,10 @@ db = firestore.Client(project=project_id, database='dreamgeniedb')
 def store_to_firestore(request_data: CreateScheduleRequest, ai_response) -> Tuple[bool, str]:
     try:
 
-        # Pydanticモデルを辞書に変換し、Firestoreに保存するデータを準備
-        data_to_store = request_data.model_dump()
-        data_to_store.update({
-            'tasks': ai_response.get('tasks', []),
-            'ai_comment': ai_response.get('ai_comment', ''),
-        })
+        # start_dayとend_dayはAIのレスポンスから取得するため、リクエストデータから除外
+        data_to_store = request_data.model_dump(exclude={'start_day', 'end_day'})
+        # AIのレスポンス内容で更新
+        data_to_store.update(ai_response)
 
         doc_ref = db.collection('schedules').document()
         data_to_store['project_id'] = doc_ref.id

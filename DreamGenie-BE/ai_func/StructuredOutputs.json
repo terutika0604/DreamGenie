@@ -11,9 +11,19 @@
       "items": {
         "ref": "#/defs/task"
       }
+    },
+    "start_day": {
+      "type": "string",
+      "description": "プロジェクト全体の開始日 (YYYY/MM/DD)",
+      "pattern": "^[0-9]{4}/[0-9]{2}/[0-9]{2}$"
+    },
+    "end_day": {
+      "type": "string",
+      "description": "プロジェクト全体の終了日 (YYYY/MM/DD)",
+      "pattern": "^[0-9]{4}/[0-9]{2}/[0-9]{2}$"
     }
   },
-  "required": ["ai_comment", "tasks"],
+  "required": ["ai_comment", "tasks", "start_day", "end_day"],
   "defs": {
     "task": {
       "type": "object",
