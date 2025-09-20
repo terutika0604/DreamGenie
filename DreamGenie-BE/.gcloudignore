@@ -1,0 +1,23 @@
+# This file specifies files that should NOT be uploaded to Google Cloud
+# when deploying. .gcloudignore has a syntax similar to .gitignore.
+# IMPORTANT: Make sure Dockerfile is NOT listed in this file.
+
+.gcloudignore
+.git
+.gitignore
+
+# Environments and cache
+.venv/
+venv/
+env/
+__pycache__/
+*.pyc
+
+# IDE and dev container configuration
+.vscode/
+.idea/
+
+# Local secrets and environment variables
+# These should be managed with Google Cloud Secret Manager.
+Authentication.json
+.env
