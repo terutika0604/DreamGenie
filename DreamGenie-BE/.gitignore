@@ -8,7 +8,7 @@ __pycache__/
 *.pyc
 
 # Credentials and environment variables
-vertexAI.json
+Authentication.json
 .env
 
 # IDE settings
