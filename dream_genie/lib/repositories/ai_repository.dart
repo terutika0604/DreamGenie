@@ -23,9 +23,10 @@ class AIRepository implements IAIRepository {
   @override
   Future<Map<String, dynamic>> createSchedule(InitData initdata) async {
     try {
-      // TODO: send real data
       final response = await client.post(
         Uri.parse(ApiEndpoints.ganttGenerate),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(initdata.toJson()),
       );
 
       if (response.statusCode == 200) {
@@ -43,9 +44,10 @@ class AIRepository implements IAIRepository {
   @override
   Future<Map<String, dynamic>> updateSchedule(UpdateData updatedata) async {
     try {
-      // TODO: send real data
-      final response = await client.get(
+      final response = await client.post(
         Uri.parse(ApiEndpoints.ganttGenerate),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(updatedata.toJson()),
       );
 
       if (response.statusCode == 200) {
@@ -63,9 +65,10 @@ class AIRepository implements IAIRepository {
   @override
   Future<void> acceptUpdate(Map<String, dynamic> json) async {
     try {
-      // TODO: send real data
-      await client.get(
+      await client.post(
         Uri.parse(ApiEndpoints.ganttGenerate),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(json),
       );
     } catch (e) {
       throw Exception('Failed to connect to the server. Error: $e');
