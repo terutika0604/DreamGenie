@@ -36,11 +36,18 @@ jobs:
       with:
         credentials_json: ${{ secrets.GCP_SA_KEY }}
 
-    # 5. Docker ビルド & プッシュ
+    # 5. Docker 認証 & ビルド & プッシュ
+    - name: Authenticate to GCP
+      uses: google-github-actions/auth@v1
+      with:
+        credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+    - name: Configure Docker for Artifact Registry
+      run: gcloud auth configure-docker asia-northeast1-docker.pkg.dev
+
     - name: Build and push Docker image
       run: |
-        IMAGE_URI=${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPO_NAME }}/${{ env.IMAGE_NAME }}:${GITHUB_SHA}
-        echo "Building Docker image: $IMAGE_URI"
+        IMAGE_URI=asia-northeast1-docker.pkg.dev/i-crossbar-471511-h9/dreamgenie-repo/dreamgenie-app:latest
         docker build -t $IMAGE_URI ./dream_genie
         docker push $IMAGE_URI
 
