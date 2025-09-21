@@ -3,61 +3,64 @@ name: Deploy Flutter Web to Cloud Run
 on:
   workflow_dispatch:
 
+env:
+  PROJECT_ID: i-crossbar-471511-h9
+  REGION: asia-northeast1
+  REPO_NAME: dreamgenie-repo
+  IMAGE_NAME: dreamgenie-app
+  SERVICE_NAME: dreamgenie-app
+  FLUTTER_ROOT: /opt/hostedtoolcache/flutter/stable-3.35.3-x64
+  PUB_CACHE: /home/runner/.pub-cache
+
 jobs:
-  build-and-deploy:
+  deploy:
     runs-on: ubuntu-latest
 
-    env:
-      PROJECT_ID: i-crossbar-471511-h9
-      REGION: asia-northeast1           # Cloud Run と Artifact Registry のリージョン
-      REPO_NAME: dreamgenie-repo      # Artifact Registry のリポジトリ名
-      IMAGE_NAME: dreamgenie-app       # Docker イメージ名
-      SERVICE_NAME: dreamgenie-app         # Cloud Run サービス名
-
     steps:
-    # 1. コードチェックアウト
-    - name: Checkout repository
-      uses: actions/checkout@v3
+      # 1. Checkout code
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-    # 2. Flutter セットアップ
-    - name: Set up Flutter
-      uses: subosito/flutter-action@v2
-      with:
-        flutter-version: '3.35.3'
+      # 2. Setup gcloud
+      - name: Set up Google Cloud SDK
+        uses: google-github-actions/setup-gcloud@v1
+        with:
+          project_id: ${{ env.PROJECT_ID }}
+          service_account_key: ${{ secrets.GCP_SA_KEY }}
+          export_default_credentials: true
 
-    # 3. Flutter Web ビルド
-    - name: Build Flutter Web
-      working-directory: ./dream_genie
-      run: flutter build web --release
+      # 3. Configure Docker auth for Artifact Registry
+      - name: Configure Docker for Artifact Registry
+        run: gcloud auth configure-docker asia-northeast1-docker.pkg.dev
 
-    # 4. GCP 認証
-    - name: Authenticate to GCP
-      uses: google-github-actions/auth@v1
-      with:
-        credentials_json: ${{ secrets.GCP_SA_KEY }}
+      # 4. Build Flutter Web
+      - name: Install Flutter dependencies
+        run: |
+          cd dream_genie
+          flutter pub get
 
-    # 5. Docker 認証 & ビルド & プッシュ
-    - name: Authenticate to GCP
-      uses: google-github-actions/auth@v1
-      with:
-        credentials_json: ${{ secrets.GCP_SA_KEY }}
+      - name: Build Flutter Web
+        run: |
+          cd dream_genie
+          flutter build web
 
-    - name: Configure Docker for Artifact Registry
-      run: gcloud auth configure-docker asia-northeast1-docker.pkg.dev
+      # 5. Build Docker image
+      - name: Build Docker image
+        run: |
+          IMAGE_URI=asia-northeast1-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPO_NAME }}/${{ env.IMAGE_NAME }}:latest
+          docker build -t $IMAGE_URI ./dream_genie
+          echo "IMAGE_URI=$IMAGE_URI" >> $GITHUB_ENV
 
-    - name: Build and push Docker image
-      run: |
-        IMAGE_URI=asia-northeast1-docker.pkg.dev/i-crossbar-471511-h9/dreamgenie-repo/dreamgenie-app:latest
-        docker build -t $IMAGE_URI ./dream_genie
-        docker push $IMAGE_URI
+      # 6. Push Docker image
+      - name: Push Docker image
+        run: |
+          docker push $IMAGE_URI
 
-    # 6. Cloud Run デプロイ
-    - name: Deploy to Cloud Run
-      run: |
-        IMAGE_URI=${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPO_NAME }}/${{ env.IMAGE_NAME }}:${GITHUB_SHA}
-        echo "Deploying to Cloud Run: ${{ env.SERVICE_NAME }}"
-        gcloud run deploy ${{ env.SERVICE_NAME }} \
-          --image $IMAGE_URI \
-          --region ${{ env.REGION }} \
-          --platform managed \
-          --allow-unauthenticated
+      # 7. Deploy to Cloud Run
+      - name: Deploy to Cloud Run
+        run: |
+          gcloud run deploy ${{ env.SERVICE_NAME }} \
+            --image $IMAGE_URI \
+            --region ${{ env.REGION }} \
+            --platform managed \
+            --allow-unauthenticated
