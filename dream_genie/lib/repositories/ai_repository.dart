@@ -24,7 +24,7 @@ class AIRepository implements IAIRepository {
   Future<Map<String, dynamic>> createSchedule(InitData initdata) async {
     try {
       final response = await client.post(
-        Uri.parse(ApiEndpoints.ganttGenerate),
+        Uri.parse(ApiEndpoints.ganttCreate),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode(initdata.toJson()),
       );
@@ -45,7 +45,7 @@ class AIRepository implements IAIRepository {
   Future<Map<String, dynamic>> updateSchedule(UpdateData updatedata) async {
     try {
       final response = await client.post(
-        Uri.parse(ApiEndpoints.ganttGenerate),
+        Uri.parse(ApiEndpoints.ganttUpdate),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode(updatedata.toJson()),
       );
@@ -66,7 +66,7 @@ class AIRepository implements IAIRepository {
   Future<void> acceptUpdate(Map<String, dynamic> json) async {
     try {
       await client.post(
-        Uri.parse(ApiEndpoints.ganttGenerate),
+        Uri.parse(ApiEndpoints.ganttApproval),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode(json),
       );

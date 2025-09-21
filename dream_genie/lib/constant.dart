@@ -1,6 +1,6 @@
 import 'package:flutter_gantt/flutter_gantt.dart';
 
-const bool isMock = true;
+const bool isMock = false;
 
 // TODO: multiple user
 const userId = "udd001";
@@ -8,10 +8,12 @@ const userId = "udd001";
 class ApiEndpoints {
   ApiEndpoints._();
 
-  static const String baseUrl = "https://api.example.com";
+  static const String baseUrl =
+      "https://dreamgenie-api-75461065767.asia-northeast1.run.app";
 
-  static const ganttGenerate = "$baseUrl/create";
-  static const ganttUpdate = "$baseUrl/update";
+  static const ganttCreate = "$baseUrl/createSchedule";
+  static const ganttUpdate = "$baseUrl/updateSchedule";
+  static const ganttApproval = "$baseUrl/approvalSchedule";
 }
 
 final now = DateTime.now();
