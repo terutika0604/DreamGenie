@@ -27,13 +27,11 @@ jobs:
       working-directory: ./dream_genie
       run: flutter build web --release
 
-    # 4. GCP 認証
     - name: Authenticate to GCP
       uses: google-github-actions/auth@v1
       with:
         credentials_json: ${{ secrets.GCP_SA_KEY }}
 
-    # 5. Docker 認証 & ビルド & プッシュ
     - name: Authenticate to GCP
       uses: google-github-actions/auth@v1
       with:
@@ -48,7 +46,6 @@ jobs:
         docker build -t $IMAGE_URI ./dream_genie
         docker push $IMAGE_URI
 
-    # 6. Cloud Run デプロイ
     - name: Deploy to Cloud Run
       run: |
         IMAGE_URI=${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPO_NAME }}/${{ env.IMAGE_NAME }}:latest
