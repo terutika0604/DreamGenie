@@ -14,7 +14,7 @@ def createSchedule(request: CreateScheduleRequest):
     with open(prompt_path, "r", encoding="utf-8") as f:
         system_message_template = f.read()
 
-    system_message = system_message_template.format(start_day=request.start_day, end_day=request.end_day)
+    system_message = system_message_template.format(start_date=request.start_date, end_date=request.end_date)
     prompt_text = system_message + request.user_goal
 
     #構造化出力の形式を取得

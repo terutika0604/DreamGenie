@@ -2,8 +2,8 @@ import 'package:flutter_gantt/flutter_gantt.dart';
 
 class ResponseData {
   final String projectId;
-  final String aiComent;
+  final String aiComment;
   final List<GanttActivity> tasks;
   ResponseData(
-      {required this.projectId, required this.aiComent, required this.tasks});
+      {required this.projectId, required this.aiComment, required this.tasks});
 }

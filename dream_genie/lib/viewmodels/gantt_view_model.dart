@@ -24,7 +24,7 @@ class GanttViewModel extends ChangeNotifier {
   final List<ChatMessage> _messages = [];
   Map<String, dynamic> _changingJson = {};
   ResponseData _aiResponse =
-      ResponseData(projectId: '', aiComent: '', tasks: []);
+      ResponseData(projectId: '', aiComment: '', tasks: []);
 
   get projectId => _projectId;
   get projectName => _projectName;
@@ -39,16 +39,16 @@ class GanttViewModel extends ChangeNotifier {
     _messages.add(newMessage);
   }
 
-  Future<void> createSchedule(InitData initdata) async {
+  Future<void> createSchedule(InitData initData) async {
     try {
       _isLoading = true;
       _errorMessage = null;
       notifyListeners();
 
-      _projectName = initdata.title;
-      _userGoal = initdata.userGoal;
+      _projectName = initData.title;
+      _userGoal = initData.userGoal;
 
-      final json = await repository.createSchedule(initdata);
+      final json = await repository.createSchedule(initData);
       try {
         _aiResponse = JsonParser.parseResponseData(json);
       } catch (e) {
@@ -56,7 +56,7 @@ class GanttViewModel extends ChangeNotifier {
       }
       _projectId = _aiResponse.projectId;
       _activities = _aiResponse.tasks;
-      addMessages(ChatMessage(sender: 'ai', text: _aiResponse.aiComent));
+      addMessages(ChatMessage(sender: 'ai', text: _aiResponse.aiComment));
 
       _isLoading = false;
       notifyListeners();
@@ -84,7 +84,7 @@ class GanttViewModel extends ChangeNotifier {
 
       _isChanging = true;
       _activities = _aiResponse.tasks;
-      addMessages(ChatMessage(sender: 'ai', text: _aiResponse.aiComent));
+      addMessages(ChatMessage(sender: 'ai', text: _aiResponse.aiComment));
       addMessages(ChatMessage(sender: 'ai', text: "これで確定しますか？"));
 
       _isLoading = false;

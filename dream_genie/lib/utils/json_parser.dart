@@ -11,7 +11,7 @@ class JsonParser {
     final List<GanttActivity> activities = _parseGanttActivities(json['tasks']);
     return ResponseData(
       projectId: json['project_id'],
-      aiComent: json['ai_coment'],
+      aiComment: json['ai_comment'],
       tasks: activities,
     );
   }

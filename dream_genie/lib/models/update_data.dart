@@ -13,7 +13,7 @@ class UpdateData {
     return {
       'project_id': projectId,
       'user_id': userId,
-      'title': userMessage,
+      'user_message': userMessage,
     };
   }
 }

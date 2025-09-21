@@ -19,8 +19,8 @@ db = firestore.Client(project=project_id, database='dreamgeniedb')
 def store_to_firestore(request_data: CreateScheduleRequest, ai_response) -> Tuple[bool, str]:
     try:
 
-        # start_dayとend_dayはAIのレスポンスから取得するため、リクエストデータから除外
-        data_to_store = request_data.model_dump(exclude={'start_day', 'end_day'})
+        # start_dateとend_dateはAIのレスポンスから取得するため、リクエストデータから除外
+        data_to_store = request_data.model_dump(exclude={'start_date', 'end_date'})
         # AIのレスポンス内容で更新
         data_to_store.update(ai_response)
 
