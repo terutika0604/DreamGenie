@@ -9,7 +9,6 @@ env:
   REPO_NAME: dreamgenie-repo
   IMAGE_NAME: dreamgenie-app
   SERVICE_NAME: dreamgenie-app
-  FLUTTER_ROOT: /opt/hostedtoolcache/flutter/stable-3.35.3-x64
   PUB_CACHE: /home/runner/.pub-cache
 
 jobs:
@@ -17,11 +16,29 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. Checkout code
+      # 1. Checkout repository
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # 2. Setup gcloud
+      # 2. Set up Flutter
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.35.3'
+
+      # 3. Install Flutter dependencies
+      - name: Install Flutter dependencies
+        run: |
+          cd dream_genie
+          flutter pub get
+
+      # 4. Build Flutter Web
+      - name: Build Flutter Web
+        run: |
+          cd dream_genie
+          flutter build web
+
+      # 5. Set up Google Cloud SDK
       - name: Set up Google Cloud SDK
         uses: google-github-actions/setup-gcloud@v1
         with:
@@ -29,34 +46,23 @@ jobs:
           service_account_key: ${{ secrets.GCP_SA_KEY }}
           export_default_credentials: true
 
-      # 3. Configure Docker auth for Artifact Registry
+      # 6. Configure Docker auth for Artifact Registry
       - name: Configure Docker for Artifact Registry
         run: gcloud auth configure-docker asia-northeast1-docker.pkg.dev
 
-      # 4. Build Flutter Web
-      - name: Install Flutter dependencies
-        run: |
-          cd dream_genie
-          flutter pub get
-
-      - name: Build Flutter Web
-        run: |
-          cd dream_genie
-          flutter build web
-
-      # 5. Build Docker image
+      # 7. Build Docker image
       - name: Build Docker image
         run: |
           IMAGE_URI=asia-northeast1-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPO_NAME }}/${{ env.IMAGE_NAME }}:latest
           docker build -t $IMAGE_URI ./dream_genie
           echo "IMAGE_URI=$IMAGE_URI" >> $GITHUB_ENV
 
-      # 6. Push Docker image
+      # 8. Push Docker image
       - name: Push Docker image
         run: |
           docker push $IMAGE_URI
 
-      # 7. Deploy to Cloud Run
+      # 9. Deploy to Cloud Run
       - name: Deploy to Cloud Run
         run: |
           gcloud run deploy ${{ env.SERVICE_NAME }} \
