@@ -3,8 +3,8 @@ from pydantic import BaseModel
 class CreateScheduleRequest(BaseModel):
     user_id: str
     title: str
-    start_day: str
-    end_day: str
+    start_date: str
+    end_date: str
     user_goal: str
 
 class UpdateScheduleRequest(BaseModel):

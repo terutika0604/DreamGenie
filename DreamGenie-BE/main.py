@@ -1,8 +1,21 @@
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from process import orchestrator
 from schemas import CreateScheduleRequest, UpdateScheduleRequest, ApprovalScheduleRequest
 
 app = FastAPI()
+
+# 全てのオリジンからのリクエストを許可するCORS設定
+origins = ["*"]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 
 @app.get("/")
 def hello():
