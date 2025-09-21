@@ -1,37 +1,37 @@
 @startuml sequence_diagram
 actor User
-participant FEService
-participant BEService
-participant AIAgent
-database Database
+participant FlutterApp
+participant FlaskAPI
+participant GeminiAPI
+database FireBase
 
 == Create schedule ==
-User -> FEService: access
-FEService -> BEService: Init data - /createSchedule
-BEService -> AIAgent: AI request prompt(text)
-AIAgent --> BEService: AI response data
-BEService -> Database: Store data
-BEService --> FEService: Be response data
+User -> FlutterApp: access
+FlutterApp -> FlaskAPI: Init data - /createSchedule
+FlaskAPI -> GeminiAPI: AI request prompt(text)
+GeminiAPI --> FlaskAPI: AI response data
+FlaskAPI -> FireBase: Store data
+FlaskAPI --> FlutterApp: Be response data
 
 == Update schedule ==
-User -> FEService: prompt(text)
-FEService -> BEService: update data - /updateSchedule
-BEService -> Database: Get store data
-Database --> BEService: Store data
-BEService -> AIAgent: AI request prompt(text)
-AIAgent --> BEService: AI response data
-BEService --> FEService: Be response data
-FEService --> User: Confirm
+User -> FlutterApp: prompt(text)
+FlutterApp -> FlaskAPI: update data - /updateSchedule
+FlaskAPI -> FireBase: Get store data
+FireBase --> FlaskAPI: Store data
+FlaskAPI -> GeminiAPI: AI request prompt(text)
+GeminiAPI --> FlaskAPI: AI response data
+FlaskAPI --> FlutterApp: Be response data
+FlutterApp --> User: Confirm
 
 == Approval schedule ==
 alt ok
-  User -> FEService: OK
-  FEService -> BEService: Tasks resend
-  BEService -> Database: Store data(only update tasks)
-  FEService -> User: Rebuild using new data
+  User -> FlutterApp: OK
+  FlutterApp -> FlaskAPI: Resend Be response data
+  FlaskAPI -> FireBase: Store data(only update tasks)
+  FlutterApp -> User: Rebuild using new data
 else ng
-  User -> FEService: NG
-  FEService -> User: Rebuild using old data
+  User -> FlutterApp: NG
+  FlutterApp -> User: Rebuild using old data
 end
 
 @enduml
