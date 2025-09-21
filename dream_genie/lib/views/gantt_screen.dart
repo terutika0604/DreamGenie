@@ -27,6 +27,7 @@ class GanttScreen extends StatefulWidget {
 
 class _GanttScreenState extends State<GanttScreen> {
   late final GanttController _controller;
+  int _daysView = 10;
 
   @override
   void initState() {
@@ -34,7 +35,7 @@ class _GanttScreenState extends State<GanttScreen> {
 
     _controller = GanttController(
       startDate: now.subtract(const Duration(days: 14)),
-      //daysViews: 10, // Optional: you can set the number of days to be displayed
+      daysViews: _daysView,
     );
 
     _controller.addOnActivityChangedListener(_onActivityChanged);
@@ -78,6 +79,42 @@ class _GanttScreenState extends State<GanttScreen> {
             children: [
               Column(
                 children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 8.0, vertical: 4.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.white,
+                            foregroundColor: theme.colorScheme.primary,
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              _daysView = (_daysView > 2) ? _daysView - 2 : 2;
+                              _controller.daysViews = _daysView;
+                            });
+                          },
+                          child: const Icon(Icons.remove),
+                        ),
+                        const SizedBox(width: 8),
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.white,
+                            foregroundColor: theme.colorScheme.primary,
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              _daysView += 2;
+                              _controller.daysViews = _daysView;
+                            });
+                          },
+                          child: const Icon(Icons.add),
+                        ),
+                      ],
+                    ),
+                  ),
                   GanttRangeSelector(controller: _controller),
                   Expanded(
                     child: vm.isLoading
