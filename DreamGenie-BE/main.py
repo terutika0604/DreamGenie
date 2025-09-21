@@ -5,8 +5,16 @@ from schemas import CreateScheduleRequest, UpdateScheduleRequest, ApprovalSchedu
 
 app = FastAPI()
 
-# 全てのオリジンからのリクエストを許可するCORS設定
-origins = ["*"]
+# 以下のオリジンからのリクエストを許可するCORS設定
+# これにより、認証情報(Cookieなど)を含むリクエストを安全に受け入れることができます。
+origins = [
+    # 本番環境のフロントエンド
+    "https://dreamgenie-app-75461065767.asia-northeast1.run.app",
+
+    # 開発環境用のURLも追加しておくと便利です
+    "http://localhost:41713",
+    "http://127.0.0.1:41713",
+]
 
 app.add_middleware(
     CORSMiddleware,

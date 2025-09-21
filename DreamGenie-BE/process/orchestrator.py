@@ -7,8 +7,13 @@ import os
 from ai_func.request_ai import request_to_ai
 
 def orchestrate_schedule_creation(request: CreateScheduleRequest):
-    ai_result = createSchedule.createSchedule(request)
-    ai_json = json.loads(ai_result)
+    ai_result_str = createSchedule.createSchedule(request)
+    try:
+        # AIからの応答が不正なJSON形式の場合に備えてエラーハンドリングを追加
+        ai_json = json.loads(ai_result_str)
+    except json.JSONDecodeError:
+        logging.error(f"AIからのレスポンスのJSONパースに失敗しました: {ai_result_str}")
+        return None
     
     # AIの処理結果をFirestoreに保存
     is_success, message_or_id = registerFirestore.store_to_firestore(request, ai_json)
@@ -58,7 +63,12 @@ def orchestrate_schedule_update(request: UpdateScheduleRequest):
 
     # AIにリクエストを投げてスケジュールを更新
     ai_result_str = request_to_ai(prompt_text, schema_dict)
-    ai_json = json.loads(ai_result_str)
+    try:
+        # AIからの応答が不正なJSON形式の場合に備えてエラーハンドリングを追加
+        ai_json = json.loads(ai_result_str)
+    except json.JSONDecodeError:
+        logging.error(f"AIからのレスポンスのJSONパースに失敗しました: {ai_result_str}")
+        return None
 
     # 更新後のデータを返す
     ai_json['project_id'] = request.project_id
