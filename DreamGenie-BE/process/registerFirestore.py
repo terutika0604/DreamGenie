@@ -47,12 +47,8 @@ def update_schedule_in_firestore(project_id: str, update_data: dict) -> bool:
             logging.warning(f"更新対象のドキュメントが見つかりません: {project_id}")
             return False
 
-        # 更新データに更新日時を追加
-        data_to_update = update_data.copy()
-        data_to_update['updatedAt'] = firestore.SERVER_TIMESTAMP
-
         # ドキュメントを更新 (updateは指定したフィールドのみを更新/追加する)
-        doc_ref.update(data_to_update)
+        doc_ref.update(update_data)
 
         logging.info(f"Firestoreのデータを更新しました。Project ID: {project_id}")
 
