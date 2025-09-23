@@ -39,7 +39,7 @@ DreamGenieは、学習や作業計画をAIが自動で補助してくれるア�
 DreamGenieは**モノリポ構成**で開発されています。  
 
 - `dream_genie`: Flutter製のフロントエンドアプリ  
-- `DreamGenie-BE`: Python (Flask) 製のバックエンド  
+- `DreamGenie-BE`: Python (FastAPI) 製のバックエンド  
 - `schema`: FE-BE間でのHTTP通信に用いるJSONスキーマを定義  
 
 ## Sequence diagram
@@ -52,7 +52,7 @@ DreamGenieは**モノリポ構成**で開発されています。
 
 ## Requirements
 - Flutter 3.35.3 
-- Python 3.10 + Flask 
+- Python 3.10 + FastAPI
 - Docker 27.3.1
 - GCP (CloudRun, Artifact Registry など)  
 
@@ -66,5 +66,5 @@ flutter run
 # バックエンド
 cd DreamGenie-BE
 pip install -r requirements.txt
-flask run
+uvicorn main:app --reload
 ```
